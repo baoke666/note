@@ -1,0 +1,22 @@
+myisam
+	表锁	lock table + tableName + read/write
+		读锁[共享锁]
+			别人也可以加锁。但是都不可以写.
+		写锁[独占锁]
+			lock table + tableName + write
+			自己可以加锁，但是别人可以不加锁
+			自己可以读和写，别人不可以读和写
+innodb
+	事务：
+		begin ===开启事务
+		rollback===回滚事务
+		commit===提交事务
+	事务自动提交
+		set autocommit=0;//关闭mysql自动提交	
+	行锁
+		读锁[共享锁]
+			sql + lock in share mode
+		写锁[排他锁]
+		    sql+for update
+=================================================================================
+		

@@ -1,0 +1,41 @@
+字符集 gbk  utf8 utf8mb4
+				2     3     4
+			1.设置你表的编码
+			2.设置mysql你一什么样的方式写入我存储的数据[set names gbk|utf8]
+			3.查看的时候你也要设置mysql编码[set names utf8|gbk]
+	表
+		表操作
+			DDL
+				INSERT,UPDATE,SELECT,DELETE
+			DML
+				alter table tableName add column columnName  type [添加列]
+				alter table tableName change column name name1 varchar(100);[修改列]
+				alter table tableName drop column columnName [删除列]
+		分表
+			一个表里面数据太多了一个表有几百亿条数据200G，一个表如果数据量上百万
+				id goods_name goods_id order_id pay_status  createtime
+				
+			垂直分表  ===分字段
+			水平分表  ===分数据
+		存储引擎
+			Innodb
+			myisam
+				数据结构区别
+					myisam:行级结构
+					innodb:二叉树
+				物理文件区别
+					mysiam:
+						.frm====表结构
+						.MYD====表数据
+						.MYI====索引
+					Innodb:
+						.frm=====表结构
+						.ibd=====数据
+				读和写区别
+					如果你网站业务是读
+						mysaim 读快
+						innodb写慢，读也慢，但是安全
+						
+				事物区别
+					innodb支持事物，支持行锁
+					mysaim不支持事物 支持表锁

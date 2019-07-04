@@ -1,0 +1,12 @@
+	伪静态
+		重写[rewrite]
+	真静态
+		ob缓存
+		ob_start() 开启
+		ob_get_contents()  获取缓存中的数据
+		ob_clean()  清空缓存中的数据
+		ob_end() 关闭ob缓存
+		ob_end_clean() 清空缓存并关闭ob缓存
+		ob_flush()  刷新缓冲区
+	配合使用:
+作业:完成之前项目首页实现真静态之前pc网站

@@ -1,0 +1,9 @@
+mysql共享开启需要给一个用户开启权限
+grant all privileges on *.* to "erhuo"@"%" identified by "123456";
+
+grant all PRIVILEGES on test_db.* to root@'192.168.148.129'  identified by '123456';    
+grant all on shop.* to 'root'@'192.168.148.129' identified by '123456' with grant option; 
+flush privileges;
+
+
+redis共享 开启redis.conf 里bind 0.0.0.0;

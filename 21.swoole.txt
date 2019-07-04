@@ -1,0 +1,162 @@
+1.swoole安装不在叙述
+
+案例swoole创建web服务器
+	$http = new swoole_http_server("0.0.0.0", 9501);
+	$http->on('request', function ($request, $response) {
+    var_dump($request->get, $request->post);
+    $response->header("Content-Type", "text/html; charset=utf-8");
+    $response->end("<h1>Hello Swoole. #".rand(1000, 9999)."</h1>");
+});
+
+$http->start();
+//案例演示
+    $http = new swoole_http_server("0.0.0.0", 9501);
+    $http->on('request', function ($request, $response) {
+        $file = $request->server['request_uri'];
+        $first = isset($request->get['first']) ? intval($request->get['first']) : 10; 
+        $second= isset($request->get['second']) ? intval($request->get['second']) : 20; 
+        $file = trim($file,"/");
+        $filePath = "/swoole/$file";
+    
+        if(file_exists($filePath)){
+            $str = require $filePath;
+            $response->end($str);
+        }   
+});
+$http->start();
+//对应得方法
+文档里面说
+======================================================================================
+配合nginx做代理
+nginx配置
+      proxy_http_version 1.1;
+      proxy_set_header Connection "keep-alive";
+      proxy_set_header X-Real-IP $remote_addr;
+      proxy_pass http://127.0.0.1:9501;
+别的什么都不用改
+=======================================================================================
+//使用swoole创建tcp服务器
+2.使用例子
+	    $serv = new Swoole\Server('0.0.0.0', 9501, SWOOLE_BASE, SWOOLE_SOCK_TCP);
+    $serv->set(array(
+      'worker_num' => 1,
+      'daemonize' => false,
+      'backlog' => 128,
+   )); 
+
+  $serv->on('Connect',function(){
+    echo "this is connect";
+  }); 
+
+ $serv->on('Receive',function(){
+    echo "this is ercevive";
+  }); 
+
+$serv->on("Close",function(){
+   echo "this is close";
+});
+$serv->start();
+=======================================================================================
+3.swoole作为http服务器【效率非常高】
+$http = new Swoole\Http\Server("127.0.0.1", 9501);
+$http->on('request', function ($request, $response) {
+    $response->end("<h1>Hello Swoole. #".rand(1000, 9999)."</h1>");
+});
+$http->start();
+===========================
+$http = new Swoole\Http\Server("0.0.0.0", 9501);
+$http->on('request', function ($request, $response) {
+    $arr = check($request);
+    #$response->end("<h1>Hello Swoole. #".rand(1000, 9999)."</h1>");
+    $str=var_export($arr,true);
+    $response->end($str);
+});
+$http->start();
+function check($request){
+    $arr = $request->server;        
+    $info = $arr['path_info'];
+    $filePath = "/swoole/$info";
+    if(file_exists($filePath)){
+      include $filePath;       
+    }   
+
+    return $arr;
+}
+=========================================================================================
+2.使用swoole搭建websocket服务
+=========================================================================================
+swoole进程
+1.创建进程:swoole_process
+$worker_num =2;//创建的进程数
+for($i=0;$i<$worker_num ; $i++){
+    $process = new swoole_process('callback_function_we_write');
+    $pid = $process->start();
+    echo PHP_EOL . $pid;//
+}
+function callback_function_we_write(swoole_process $worker){
+    echo  PHP_EOL;
+    var_dump($worker);
+    echo  PHP_EOL;
+}
+=========================================================================================
+2.使用多进程观察时间
+echo PHP_EOL . time() ;
+$worker_num =3;//创建的进程数
+for($i=0;$i<$worker_num ; $i++){
+    $process = new swoole_process('callback_function_we_write');
+    $pid = $process->start();
+}
+
+function callback_function_we_write(swoole_process $worker){
+    for($i=0;$i<100000000;$i++){}
+    echo PHP_EOL . time() ; 
+}
+//常规流程
+echo PHP_EOL . time() ;
+for($i=0;$i<100000000;$i++){}
+for($i=0;$i<100000000;$i++){}
+for($i=0;$i<100000000;$i++){}
+echo PHP_EOL . time() ;
+3.=========================================================================================
+
+案例：使用场景
+1.处理大数据
+    案例1
+		//创建进程测试时间
+		echo PHP_EOL . time() ;
+		$worker_num =3;//创建的进程数
+		for($i=0;$i<$worker_num ; $i++){
+			$process = new swoole_process('callback_function_we_write');
+			$pid = $process->start();
+		}
+
+		function callback_function_we_write(swoole_process $worker){
+			for($i=0;$i<100000000;$i++){}
+			echo PHP_EOL . time() ; 
+		}
+	
+2.进程通信
+	write|read方法
+		父子进程通信
+		子进程之间写入数据使用write()方法
+		子进程之间读取数据使用read()方法
+		$work_num=4;
+		$worker=[];
+		for($i=0;$i<$work_num;$i++){
+			$process = new swoole_process("callback",true);
+			$pid = $process->start();
+			$worker[$pid]=$process;
+		}
+		foreach ($worker as $pid=> $process){
+			$process->write("hello word{$pid}");
+			$info = $process->read();
+			print_r($info);
+		}
+		function callback($worker){
+			$info = $worker->read();
+			echo $info."\n";
+			$arr = array("name"=>"lisi");
+			$str = serialize($arr);
+			$worker->write($str);
+		}
+	

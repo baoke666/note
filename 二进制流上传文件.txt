@@ -1,0 +1,82 @@
+文件上传
+1.上午:
+	1.二进制流上传文件
+	
+	//代码
+	<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+</head>
+<script src="/js/jquery.js"></script>
+<body>
+	<input type="file" id="img">
+	<input type="button" name="btn" value="点击">
+</body>
+</html>
+
+<script>
+$(document).ready(function(){
+	$("input[name='btn']").click(function(){
+		var imgFile = new FileReader();
+		var img = document.getElementById('img');
+		var info = img.files[0];
+		imgFile.readAsDataURL(info);
+		imgFile.onload=function(){
+			var data = this.result;
+			send(data);
+		}
+	});
+	function send(img){
+		var data = {};
+		data.info = img;
+		$.ajax({
+			type : "post",
+			dataType : "json",
+			url : "base",
+			data:data,
+			success:function(msg){
+
+			}
+		});
+	}
+});
+</script>
+=========================================================================
+//php
+    public function base(Request $request){
+       // $arr = $request->input();
+       // $info = $arr['info'];
+       // $info = explode(",",$info)[1];
+       // $info = base64_decode($info);
+       // file_put_contents("./1111.jpg",$info);
+       $str = file_get_contents("php://input");//流接受
+
+    }
+============================================================================
+	
+2.下午:
+切片上传
+[https://www.cnblogs.com/sghy/p/9143955.html]
+
+
+
+
+
+
+
+
+
+
+
+file_uploads = On  #是否开启上传
+upload_max_filesize = 2M #上传文件大小
+post_max_size = 8M #表单大小
+
+
+
+
+
+
+	

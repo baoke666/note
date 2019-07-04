@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<script src="./js/jquery-1.7.2.min.js"></script>
+<style>
+    .da{
+        width:300px;
+        height:20px;
+        background-color: orangered;
+    }
+    .xiao{
+        width:0px;
+        height:20px;
+        background-color:#b2e05d;
+    }
+</style>
+<body>
+     <form action="qbcdto" method="post" enctype="multipart/form-data">
+         <input type="file" name="img" id="img">
+         <input type="button" value="上传" class="btn">
+         <div class="da">
+             <div class="xiao"></div><span class="text"></span>
+         </div>
+     </form>
+</body>
+</html>
+<script>
+
+    ii=1;
+    $(".btn").click(function () {
+        upload(ii);
+    })
+    function upload(ii) {
+        var size=1024*25;
+        var bfb=0;
+        var obj=document.getElementById("img").files[0];
+        //var obj=$("#img").val();
+        var imgname=obj.name;
+        var zpage=Math.ceil(obj.size/size);
+        var start=(ii-1)*size;
+        var end=start+size;
+        var form=new FormData();//表单对象
+        var pian=obj.slice(start,end);//每页数据
+        bfb=((start/obj.size)*100).toFixed(2);
+        form.append("file",pian,imgname);
+        $.ajax({
+            url:"qbscto",
+            type:"post",
+            data:form,
+            processData: false,
+            contentType: false,//mima类型 
+            cache:false,
+            async:true,//同步
+            success:function (msg) {
+                if(ii<zpage){
+                    ii++;
+                    bfb=bfb+"%";
+                    $(".xiao").css({width:bfb});
+                    $(".text").text(bfb);
+                    upload(ii);
+                }else{
+                    $(".xiao").css({width:"100%"});
+                    $(".text").text("100%");
+                }
+            }
+        })
+    }
+</script>

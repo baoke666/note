@@ -1,0 +1,60 @@
+yum -y install kernel-headers kernel-devel openssl-devel popt-devel
+【192.168.206.132】master
+	[root@localhost soft]# tar -xvf keepalived-1.1.20.tar.gz 
+	[root@localhost keepalived-1.1.20]# pwd
+	/soft/keepalived-1.1.20
+	[root@localhost keepalived-1.1.20]# ./configure --prefix=/
+	[root@localhost keepalived-1.1.20]# make && make install
+【192.168.206.139】备份slave
+	[root@localhost soft]# tar -xvf keepalived-1.1.20.tar.gz 
+	[root@localhost keepalived-1.1.20]# pwd
+	/soft/keepalived-1.1.20
+	[root@localhost keepalived-1.1.20]# ./configure --prefix=/
+	[root@localhost keepalived-1.1.20]# make && make install
+=================================================================================
+[root@localhost keepalived-1.1.20]# cd /etc/keepalived/
+[root@localhost keepalived]# pwd
+/etc/keepalived
+[root@localhost keepalived]# ll
+总用量 8
+-rw-r--r--. 1 root root  549 5月   9 01:44 keepalived.conf
+drwxr-xr-x. 2 root root 4096 5月   9 00:40 samples
+=======================================================================================
+[master]
+
+global_defs {
+   router_id nginx_master
+}
+vrrp_script check_nginx {
+  script "/keepalived_nginx.sh"  #需要定时执行脚本
+  interval 5   #多少秒执行一次
+}
+vrrp_instance VI_1{
+    state MASTER  #关键字master必须写
+    interface ens33  #网卡名字
+    virtual_router_id 51 
+    priority 100
+    advert_int 1
+    authentication {
+        auth_type PASS
+        auth_pass 1111
+    }
+    virtual_ipaddress {
+        192.168.206.210  #vip路由
+    }
+        #执行脚本
+    track_script {
+        check_nginx
+    }
+}
+==================================keepalived_nginx.sh===================================================
+#/bin/bash
+num=`ps aux | grep nginx | grep master | wc -l`;
+
+if [ $num -eq 0 ]
+then
+  service keepalived stop;
+fi
+=====================================================================================================
+[root@localhost keepalived]# service keepalived start
+Starting keepalived (via systemctl):                       [  确定  ]

@@ -1,0 +1,48 @@
+上午:
+接口作用:
+	1.提高开发速度
+	2.接口迭代
+接口使用场景
+		浏览器
+		操作系统
+		WEB程序[重点]
+			API 订单服务（下单 支付 查询）
+			API 用户授权 （登录 token验证）
+接口安全性
+		身份验证	
+			token 验证
+			sign  验证
+		数据安全
+			传输过程
+				数据加密
+				协议加密http|https
+		防刷
+			频繁调用接口
+接口性能
+	尽快返回数据
+	使用方式使用缓存|redis|memcache等缓存
+返回数据格式[XML|JSON]
+	
+场景实例【nginx返回数据压缩】
+连接地址[https://blog.csdn.net/huangbaokang/article/details/79931429]
+=================================================================================
+gzip配置;
+	gzip  on;   #开启gzip
+    gzip_min_length 1k; #低于1kb的资源不压缩
+    gzip_comp_level 3; #压缩级别【1-9】，越大压缩率越高，同时消耗cpu资源也越多，建议设置在4左右。
+    gzip_types text/plain application/javascript application/x-javascript text/javascript text/xml text/css;  #需要压缩哪些响应类型的资源，多个空格隔开。不建议压缩图片，下面会讲为什么。
+    gzip_disable "MSIE [1-6]\.";  #配置禁用gzip条件，支持正则。此处表示ie6及以下不启用gzip（因为ie低版本不支持）
+    gzip_vary on;  #是否添加“Vary: Accept-Encoding”响应头
+验证:
+[root@iz2zefwlhq937bc2wfpp1oz conf]# curl -H "Accept-Encoding: gzip" -I http://zhangting.phpclub.top/demo01.xml
+HTTP/1.1 200 OK
+Server: nginx/1.8.1
+Date: Sun, 24 Mar 2019 08:57:21 GMT
+Content-Type: text/xml
+Last-Modified: Sun, 24 Mar 2019 07:44:38 GMT
+Connection: keep-alive
+Vary: Accept-Encoding
+ETag: W/"5c973566-85e8"
+Content-Encoding: gzip
+[root@iz2zefwlhq937bc2wfpp1oz conf]# 
+	

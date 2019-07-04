@@ -1,0 +1,40 @@
+参考文档https://www.cnblogs.com/mliudong/p/3625522.html
+一、什么是表分区
+通俗地讲表分区是将一大表，根据条件分割成若干个小表
+二、优势
+	1.与单个磁盘或文件系统分区相比，可以存储更多的数据。
+	2.一些查询可以得到极大的优化
+三、分区类型
+	RANGE分区：基于属于一个给定连续区间的列值，把多行分配给分区。
+	LIST分区：类似于按RANGE分区，区别在于LIST分区是基于列值匹配一个离散值集合中的某个值来进行选择。
+	HASH分区：基于用户定义的表达式的返回值来进行选择的分区，
+	KEY分区：类似于按HASH分区，
+======================================================================
+一般情况下创建表
+create table test_user(
+		id int primary key auto_increment,
+		name varchar(10),
+		age tinyint(11));
+======================================================================
+在创建表的时候制定分区
+create table test_user(
+		id int,
+		name varchar(10),
+		age tinyint(11) not null 
+		)
+		partition by range(age) (
+			partition p0 values less than (10),
+			partition p1 values less than (30),
+			partition p2 values less than MAXVALUE
+		);
+注意:在分区的时候不可以首先制定主键自增
+
+看分区里面数据
+SELECT * FROM INFORMATION_SCHEMA. PARTITIONS WHERE TABLE_NAME ='test_user';
+======================================================================
+
+
+create table user_1(
+id int primary key auto_increment,
+name varchar(10),
+pwd varchar(100));

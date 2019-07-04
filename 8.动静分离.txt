@@ -1,0 +1,27 @@
+﻿动静分离
+		locaton
+	php和nginx连接方式
+		cgi 
+		fastcgi
+		socket
+		php-fpm
+
+动静分离
+	location ~ .*.(swf|js|css|jpg|gif|png)$ {
+          proxy_pass http://test_img;
+		}
+	upstream test_img {
+       server 192.168.206.133:80;
+    }
+    upstream test_php {
+       server 192.168.206.137:80;
+    }
+	php和nginx连接方式
+		cgi 
+		fastcgi
+		socket
+			fastcgi_pass   unix:/tmp/aa.sock;
+			listen = /tmp/aa.sock
+		php-fpm	
+			fastcgi_pass   127.0.0.1:9010;
+			listen = 127.0.0.1:9010

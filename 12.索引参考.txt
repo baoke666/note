@@ -1,0 +1,37 @@
+﻿	优化[表]
+		索引:其实就是一本书的目录
+			索引类型
+				普通索引
+					alter table tableName add index(字段名);
+				复合索引
+					alter table tableName add index(字段1,字段2);
+					
+					alter table ttt add index(id,name);
+					
+					select * from ttt where name="aaaa" and id=6;
+					select * from ttt where  id=6 and name="aaaa"; #用索引
+					select * from ttt where id=6; #用
+					select * from ttt where name="aaaa";
+				唯一索引 唯一:表里面内容唯一
+					alter table ttt add unique(name);
+				主键索引[primary key]
+				聚簇索引
+				全文索引
+					like
+					看下splinx
+			查看mysql索引
+				explain
+			索引覆盖
+				获取数据从索引文件里面拿去，不是从表文件里面获取
+			延迟关联
+				分页:
+					select * from tableName limit offset pageNum
+					$page=1;
+					$tiao=3;
+					$num=($page-1)*$tiao;
+					$num1=$num+$tiao;
+					select * from tableName where id>=$num and id< $num1;
+			添加多个索引
+				索引重复添加:禁止一个字段添加多个索引
+			set profile
+			参考地址[https://www.cnblogs.com/lizhanwu/p/4191765.html]

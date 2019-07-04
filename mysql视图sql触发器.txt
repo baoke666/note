@@ -1,0 +1,28 @@
+//视图
+create view demo01(name) as select name from goods;
+
+
+//触发器
+delimiter $$
+create trigger  test after insert
+on orders for each row
+begin
+	update goods set store=store-1 where id = 1;
+end
+===================================================================
+delimiter $$
+create trigger  test after insert
+on orders for each row
+begin
+	update goods set store=store-1 where id = new.c_id;
+end $$
+delimiter ;
+
+===================================================================
+delimiter $$
+create trigger  test after insert
+on orders for each row
+begin
+	update goods set store=store-new.order_num where id = new.c_id;
+end $$
+delimiter ;

@@ -1,0 +1,25 @@
+	linux服务器基本使用
+		文件操作
+			cd ls,touch,cat,head,cat,rm,find,more,tar,gzip,ln pwd,date
+		文件基本权限|软连接
+			r	w	x 
+			4   2   1
+		赋权操作
+			chown ===改变文件所属者
+			chmod ====改变文件权限
+========================================================================
+课堂练习;
+	1.请写一个shell文件
+
+		目录操作
+			mkdir,rm -rf
+		进程端口操作
+		ps kill,netstat,lsof,killall
+	linux服务器优化分析
+			sed find awk
+	sed  ===帮你修改文件里面的内容   sed "s/2/c/g" 1.txt 
+	grep ===过滤文件里面的内容 cat 2.txt  | grep -E "abc"
+	awk====awk -F " " '{print $1}' 2.txt
+	cut===
+	wc==== cat 2.txt  | wc -l
+	sort=== cat 2.txt | sort -d

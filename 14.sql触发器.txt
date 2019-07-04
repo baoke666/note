@@ -1,0 +1,62 @@
+mysql视图
+		创建视图
+			create view viewName(name,age) as +sql语句
+		查看视图
+			sql语句查询一样
+		删除视图
+			drop view + viewName
+		替换视图
+			第一种思路
+				create or replace view viewName(字段1,字段2) as sql语句
+			第二种思路
+				alter table viewName(字段1,字段2) as +sql语句
+		修改视图:
+			sql语句修改+视图修改表原始文件也修改了
+	mysql触发器
+		什么是触发器
+			触发器是一种特殊的存储过程，是嵌入到mysql的一段程序，它在插入，删除或修改特定表中的数据时触发执行
+		如何创建触发器
+			创建:
+				create trigger+触发器名称+before|after+触发事件
+				on +表名 for each row
+				begin
+					//要执行的sql语句
+				end
+			测试:
+				create table goods(
+					id int(11) primary key auto_increment,
+					name varchar(10),
+					store int
+				);
+				create table orders (
+					id int(11) primary key auto_increment,
+					order_name varchar(10),
+					order_num int(11)
+				);
+			触发器:
+				实例1:
+					delimiter $$
+					create trigger test_trigger_1 after insert 
+					on orders 
+					for each row
+					begin
+					update goods set store = store-1 where id =1;
+					end
+					delimiter ;
+			查看触发器:
+				mysql> show triggers\G;
+			删除触发器:
+				mysql> drop trigger test_trigger_2;
+			测试:
+				mysql> insert into orders set order_name="aaa",order_num=1;
+		总结:在修改订单表时候不用再使用程序修改商品表里面库存.
+		new的使用
+			第二个例子:
+			delimiter $$
+			create trigger test_trigger_2 after insert
+			on orders
+			for each row
+			begin
+				update goods set store=store-new.order_num where id = new.c_id;
+			end $$
+			delimiter ;
